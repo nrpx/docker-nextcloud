@@ -1,0 +1,13 @@
+# system files
+.env
+*.log
+*.bak
+*.sql
+*.tar
+*.tar.gz
+*.zip
+.DS_Store
+.idea
+
+# backups
+backups

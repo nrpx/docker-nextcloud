@@ -1,0 +1,106 @@
+version: '3.9'
+
+secrets:
+  nextcloud_admin_password:
+    file: ${NC_ADMIN_PASS_PATH:-/opt/nextcloud/secrets/nc_admin_pass}
+  nextcloud_admin_user:
+    file: ${NC_ADMIN_USER_PATH:-/opt/nextcloud/secrets/nc_admin_usr}
+  postgres_db:
+    file: ${NC_DB_NAME_PATH:-/opt/nextcloud/secrets/db_name}
+  postgres_password:
+    file: ${NC_DB_PASS_PATH:-/opt/nextcloud/secrets/db_pass}
+  postgres_user:
+    file: ${NC_DB_USER_PATH:-/opt/nextcloud/secrets/db_usr}
+
+services:
+  db:
+    image: postgres:${PG_VERSION:-15-alpine}
+    restart: always
+    volumes:
+      - ${NC_DB_PATH:-/opt/nextcloud/db}:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - postgres_db
+      - postgres_password
+      - postgres_user
+
+  redis:
+    image: redis:${REDIS_VERSION:-alpine}
+    restart: always
+    volumes:
+      - ${NC_REDIS_PATH:-/opt/nextcloud/redis_db}:/data
+
+  app:
+    build:
+      context: .docker/nc-fpm
+      args:
+        NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - ${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB_FILE: /run/secrets/postgres_db
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      REDIS_HOST: redis
+      NEXTCLOUD_ADMIN_PASSWORD_FILE: /run/secrets/nextcloud_admin_password
+      NEXTCLOUD_ADMIN_USER_FILE: /run/secrets/nextcloud_admin_user
+      NEXTCLOUD_TRUSTED_DOMAINS: ${NC_DOMAIN}
+      OVERWRITEHOST: ${NC_DOMAIN}
+      OVERWRITEPROTOCOL: https
+      OVERWRITECLIURL: https://${NC_DOMAIN}
+    depends_on:
+      - db
+      - redis
+    secrets:
+      - nextcloud_admin_password
+      - nextcloud_admin_user
+      - postgres_db
+      - postgres_password
+      - postgres_user
+    networks:
+      - default
+      - wg_nw
+    command: >-
+      sh -c "ip route add 192.168.30.0/25 via 192.168.36.1 && php-fpm"
+
+  web:
+    build:
+      context: .docker/nginx
+      args:
+        NGINX_VERSION: ${NGINX_VERSION:-stable-alpine-slim}
+    restart: always
+    volumes:
+      - "${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html:ro"
+    depends_on:
+      - app
+    networks:
+      - default
+      - npm_nw
+
+  cron:
+    build:
+      context: .docker/nc-fpm
+      args:
+        NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+    restart: always
+    volumes:
+      - "${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html"
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+
+networks:
+  default:
+    name: nc_nw
+  wg_nw:
+    external: true
+  npm_nw:
+    external: true
