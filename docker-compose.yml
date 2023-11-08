@@ -52,6 +52,7 @@ services:
       NEXTCLOUD_ADMIN_PASSWORD_FILE: /run/secrets/nextcloud_admin_password
       NEXTCLOUD_ADMIN_USER_FILE: /run/secrets/nextcloud_admin_user
       NEXTCLOUD_TRUSTED_DOMAINS: ${NC_DOMAIN}
+      NEXTCLOUD_UPDATE: ${NC_UPDATE:-0}
       OVERWRITEHOST: ${NC_DOMAIN}
       OVERWRITEPROTOCOL: https
       OVERWRITECLIURL: https://${NC_DOMAIN}
