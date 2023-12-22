@@ -63,6 +63,7 @@ services:
       OVERWRITEPROTOCOL: https
       OVERWRITECLIURL: https://${NC_DOMAIN}
     depends_on:
+      - nc-fpm
       - db
       - redis
     secrets:
@@ -98,6 +99,7 @@ services:
       - "${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html"
     entrypoint: /cron.sh
     depends_on:
+      - nc-fpm
       - db
       - redis
 
