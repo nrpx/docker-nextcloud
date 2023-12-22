@@ -20,7 +20,7 @@ services:
         NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
     image: nrpx/nc-fpm:latest
     pull_policy: never
-    command: ash
+    command: "exit 0"
 
   db:
     image: postgres:${PG_VERSION:-15-alpine}
