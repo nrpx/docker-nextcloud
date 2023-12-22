@@ -13,6 +13,15 @@ secrets:
     file: ${NC_DB_USER_PATH:-/opt/nextcloud/secrets/db_usr}
 
 services:
+  nc-base: &nc-base
+    build:
+      context: .docker/nc-fpm
+      args:
+        NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+    image: nrpx/nc-fpm:latest
+    pull_policy: never
+    command: ash
+
   db:
     image: postgres:${PG_VERSION:-15-alpine}
     restart: always
@@ -33,17 +42,8 @@ services:
     volumes:
       - ${NC_REDIS_PATH:-/opt/nextcloud/redis_db}:/data
 
-  nc-fpm:
-    build:
-      context: .docker/nc-fpm
-      args:
-        NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
-    command: ash
-    <<: &nc-fpm-image
-      image: docker-nextcloud/nc-fpm-image:latest
-
   app:
-    <<: *nc-fpm-image
+    <<: *nc-base
     restart: always
     cap_add:
       - NET_ADMIN
@@ -93,7 +93,7 @@ services:
       - npm_nw
 
   cron:
-    <<: *nc-fpm-image
+    <<: *nc-base
     restart: always
     volumes:
       - "${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html"
