@@ -82,6 +82,8 @@ services:
       context: .docker/nginx
       args:
         NGINX_VERSION: ${NGINX_VERSION:-stable-alpine-slim}
+    image: nrpx/nc-web:latest
+    pull_policy: never
     restart: always
     volumes:
       - "${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html:ro"
