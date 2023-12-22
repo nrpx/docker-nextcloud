@@ -12,16 +12,16 @@ secrets:
   postgres_user:
     file: ${NC_DB_USER_PATH:-/opt/nextcloud/secrets/db_usr}
 
-services:
-  nc-base: &nc-base
-    build:
-      context: .docker/nc-fpm
-      args:
-        NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
-    image: nrpx/nc-fpm:latest
-    pull_policy: never
-    command: "exit 0"
+x-nc-base: &nc-base
+  build:
+    context: .docker/nc-fpm
+    args:
+      NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+  image: nrpx/nc-fpm:latest
+  pull_policy: never
+  command: "exit 0"
 
+services:
   db:
     image: postgres:${PG_VERSION:-15-alpine}
     restart: always
