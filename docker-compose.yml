@@ -33,11 +33,17 @@ services:
     volumes:
       - ${NC_REDIS_PATH:-/opt/nextcloud/redis_db}:/data
 
-  app:
+  nc-fpm:
     build:
       context: .docker/nc-fpm
       args:
         NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+    command: ash
+    <<: &nc-fpm-image
+      image: docker-nextcloud/nc-fpm-image:latest
+
+  app:
+    <<: *nc-fpm-image
     restart: always
     cap_add:
       - NET_ADMIN
@@ -86,10 +92,7 @@ services:
       - npm_nw
 
   cron:
-    build:
-      context: .docker/nc-fpm
-      args:
-        NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+    <<: *nc-fpm-image
     restart: always
     volumes:
       - "${NC_APP_PATH:-/opt/nextcloud/app}:/var/www/html"
