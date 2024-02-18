@@ -2,6 +2,8 @@ ARG NC_VERSION
 
 FROM nextcloud:${NC_VERSION}
 
+COPY opcache-recommended.ini /usr/local/etc/php/conf.d/opcache-recommended.ini
+
 RUN set -ex; \
     \
     apk upgrade --update-cache --available \
