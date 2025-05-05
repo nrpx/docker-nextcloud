@@ -12,7 +12,6 @@ RUN set -ex; \
     apk add --no-cache \
         openssl \
         ffmpeg \
-        imagemagick \
         procps \
         samba-client \
     ; \
