@@ -90,7 +90,6 @@ services:
     ports:
       - 3478:3478/tcp
       - 3478:3478/udp
-      - 8181:8081/tcp
     environment:
       NC_DOMAIN: ${NC_DOMAIN}
       TALK_HOST: ${NC_TALK_HOST}
