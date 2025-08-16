@@ -11,6 +11,12 @@ secrets:
     file: ${NC_DB_PASS_PATH:-/opt/nextcloud/secrets/db_pass}
   postgres_user:
     file: ${NC_DB_USER_PATH:-/opt/nextcloud/secrets/db_usr}
+  talk_turn_secret:
+    file: ${NC_TURN_SECRET_PATH:-/opt/nextcloud/secrets/turn_secret}
+  talk_signal_secret:
+    file: ${NC_SIGNAL_SECRET_PATH:-/opt/nextcloud/secrets/signal_secret}
+  talk_internal_secret:
+    file: ${NC_TALK_INTERNAL_SECRET_PATH:-/opt/nextcloud/secrets/talk_internal_secret}
 
 x-nc-base: &nc-base
   build:
@@ -76,6 +82,30 @@ services:
       - wg_nw
     command: >-
       sh -c "ip route add 192.168.30.0/25 via 192.168.36.1 && php-fpm"
+
+  talk-hpb:
+    restart: always
+    image: ghcr.io/nextcloud-releases/aio-talk:latest
+    init: true
+    ports:
+      - 3478:3478/tcp
+      - 3478:3478/udp
+      - 8181:8081/tcp
+    environment:
+      NC_DOMAIN: ${NC_DOMAIN}
+      TALK_HOST: ${NC_TALK_HOST}
+      TURN_SECRET: /run/secrets/talk_turn_secret
+      SIGNALING_SECRET: /run/secrets/talk_signal_secret
+      TZ: Europe/Moscow
+      TALK_PORT: 3478
+      INTERNAL_SECRET: /run/secrets/talk_internal_secret
+    secrets:
+      - talk_turn_secret
+      - talk_signal_secret
+      - talk_internal_secret
+    networks:
+      - default
+      - npm_nw
 
   web:
     build:
