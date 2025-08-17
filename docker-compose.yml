@@ -93,11 +93,11 @@ services:
     environment:
       NC_DOMAIN: ${NC_DOMAIN}
       TALK_HOST: ${NC_TALK_HOST}
-      TURN_SECRET: /run/secrets/talk_turn_secret
-      SIGNALING_SECRET: /run/secrets/talk_signal_secret
+      TURN_SECRET_FILE: /run/secrets/talk_turn_secret
+      SIGNALING_SECRET_FILE: /run/secrets/talk_signal_secret
       TZ: Europe/Moscow
       TALK_PORT: 3478
-      INTERNAL_SECRET: /run/secrets/talk_internal_secret
+      INTERNAL_SECRET_FILE: /run/secrets/talk_internal_secret
     secrets:
       - talk_turn_secret
       - talk_signal_secret
