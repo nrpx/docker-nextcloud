@@ -71,7 +71,7 @@ services:
       OVERWRITEPROTOCOL: https
       OVERWRITECLIURL: https://${NC_DOMAIN}
       SMTP_HOST: ${NC_SMTP_HOST}
-      SMTP_SECURE: true
+      SMTP_SECURE: 1
       SMTP_NAME: ${NC_SMTP_NAME}
       SMTP_PASSWORD_FILE: /run/secrets/smtp_password
       MAIL_FROM_ADDRESS: ${NC_MAIL_FROM}
