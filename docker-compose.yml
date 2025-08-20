@@ -11,14 +11,14 @@ secrets:
     file: ${NC_DB_PASS_PATH:-/opt/nextcloud/secrets/db_pass}
   postgres_user:
     file: ${NC_DB_USER_PATH:-/opt/nextcloud/secrets/db_usr}
+  smtp_password:
+    file: ${NC_SMTP_PASS_PATH:-/opt/nextcloud/secrets/smtp_pass}
   # talk_turn_secret:
   #   file: ${NC_TURN_SECRET_PATH:-/opt/nextcloud/secrets/turn_secret}
   # talk_signal_secret:
   #   file: ${NC_SIGNAL_SECRET_PATH:-/opt/nextcloud/secrets/signal_secret}
   # talk_internal_secret:
   #   file: ${NC_TALK_INTERNAL_SECRET_PATH:-/opt/nextcloud/secrets/talk_internal_secret}
-  smtp_password:
-    file: ${NC_SMTP_PASS_PATH:-/opt/nextcloud/secrets/smtp_pass}
 
 x-nc-base: &nc-base
   build:
