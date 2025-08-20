@@ -49,6 +49,8 @@ services:
     restart: always
     volumes:
       - ${NC_REDIS_PATH:-/opt/nextcloud/redis_db}:/data
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   app:
     <<: *nc-base
@@ -110,6 +112,8 @@ services:
     networks:
       - default
       - npm_nw
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   web:
     build:
