@@ -43,6 +43,8 @@ services:
       - postgres_db
       - postgres_password
       - postgres_user
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   redis:
     image: redis:${REDIS_VERSION:-alpine}
