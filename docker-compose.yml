@@ -47,7 +47,7 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   redis:
-    image: redis:${REDIS_VERSION:-alpine}
+    image: valkey/valkey:${REDIS_VERSION:-alpine}
     restart: always
     volumes:
       - ${NC_REDIS_PATH:-/opt/nextcloud/redis_db}:/data
