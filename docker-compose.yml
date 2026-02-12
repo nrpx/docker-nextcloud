@@ -49,6 +49,8 @@ services:
   redis:
     image: valkey/valkey:${REDIS_VERSION:-alpine}
     restart: always
+    environment:
+      VALKEY_EXTRA_FLAGS: ${NC_VALKEY_EXTRA_FLAGS:---save 60 1 --loglevel warning}
     volumes:
       - ${NC_REDIS_PATH:-/opt/nextcloud/redis_db}:/data
     labels:
