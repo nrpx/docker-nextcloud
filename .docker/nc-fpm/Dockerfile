@@ -1,6 +1,8 @@
-ARG NC_VERSION
+ARG NC_VERSION=31-fpm-alpine
 
 FROM nextcloud:${NC_VERSION}
+
+ARG SMBCLIENT_VERSION=1.1.2
 
 COPY opcache-recommended.ini /usr/local/etc/php/conf.d/opcache-recommended.ini
 
@@ -30,7 +32,7 @@ RUN set -ex; \
         bz2 \
     ; \
     \
-    pecl install smbclient; \
+    pecl install "https://pecl.php.net/get/smbclient-${SMBCLIENT_VERSION}.tgz"; \
     docker-php-ext-enable smbclient; \
     \
     runDeps="$( \
