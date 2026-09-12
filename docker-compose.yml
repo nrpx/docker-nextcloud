@@ -31,6 +31,12 @@ x-nc-base: &nc-base
 
 services:
   db:
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+        compress: 'true'
     image: postgres:${PG_VERSION:-15-alpine}
     restart: always
     volumes:
@@ -47,6 +53,12 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   redis:
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+        compress: 'true'
     image: valkey/valkey:${REDIS_VERSION:-alpine}
     restart: always
     environment:
@@ -57,6 +69,12 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   app:
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+        compress: 'true'
     <<: *nc-base
     restart: always
     cap_add:
@@ -99,6 +117,12 @@ services:
       sh -c "ip route add 192.168.30.0/25 via 192.168.36.1 && php-fpm"
 
   talk-hpb:
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+        compress: 'true'
     restart: always
     image: ghcr.io/nextcloud-releases/aio-talk:latest
     init: true
@@ -120,6 +144,12 @@ services:
       - "com.centurylinklabs.watchtower.enable=true"
 
   web:
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+        compress: 'true'
     build:
       context: .docker/nginx
       args:
@@ -136,6 +166,12 @@ services:
       - npm_nw
 
   cron:
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+        compress: 'true'
     <<: *nc-base
     restart: always
     volumes:
