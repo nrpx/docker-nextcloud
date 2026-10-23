@@ -51,3 +51,11 @@ deployment. The existing `wg_nw` network and route to the SMB subnet are retaine
 WireGuard owns `192.168.36.1`; FPM uses `192.168.36.2` (overridable with
 `NC_APP_WG_IP`). This prevents Docker from assigning the gateway's address to
 Nextcloud while the WireGuard container is stopped.
+
+## Talk HPB memory
+
+Keep the `talk-hpb` service's `nofile` limits at soft `65536` and hard `1048576`.
+With a huge inherited host limit, Erlang can preallocate gigabytes for its port
+table even without TURN sessions; see [eturnal issue 97](https://github.com/processone/eturnal/issues/97).
+Recreate the service after changing the limits, then check `eturnalctl info`
+and the container's memory usage.

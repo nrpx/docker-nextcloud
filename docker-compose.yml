@@ -129,6 +129,12 @@ services:
     restart: always
     image: ghcr.io/nextcloud-releases/aio-talk:latest
     init: true
+    # Prevent Erlang preallocating gigabytes for an inherited huge fd limit.
+    # https://github.com/processone/eturnal/issues/97
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 1048576
     ports:
       - 3478:3478/tcp
       - 3478:3478/udp
