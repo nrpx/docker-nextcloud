@@ -48,3 +48,6 @@ together when selecting another extension release. The build verifies that
 
 Check `php --ri smbclient` and `php occ files_external:dependencies` after
 deployment. The existing `wg_nw` network and route to the SMB subnet are retained.
+WireGuard owns `192.168.36.1`; FPM uses `192.168.36.2` (overridable with
+`NC_APP_WG_IP`). This prevents Docker from assigning the gateway's address to
+Nextcloud while the WireGuard container is stopped.

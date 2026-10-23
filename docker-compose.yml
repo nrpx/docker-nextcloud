@@ -113,10 +113,11 @@ services:
       - postgres_user
       - smtp_password
     networks:
-      - default
-      - wg_nw
+      default: {}
+      wg_nw:
+        ipv4_address: ${NC_APP_WG_IP:-192.168.36.2}
     command: >-
-      sh -c "ip route add 192.168.30.0/25 via 192.168.36.1 && php-fpm"
+      sh -c "ip route replace 192.168.30.0/25 via 192.168.36.1 && exec php-fpm"
 
   talk-hpb:
     logging:
