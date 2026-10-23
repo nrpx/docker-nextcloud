@@ -1,4 +1,4 @@
-ARG NC_VERSION=32-fpm-alpine
+ARG NC_VERSION=35.0.2-fpm-alpine
 
 FROM nextcloud:${NC_VERSION}
 
