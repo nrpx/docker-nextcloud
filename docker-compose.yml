@@ -24,7 +24,9 @@ x-nc-base: &nc-base
   build:
     context: .docker/nc-fpm
     args:
-      NC_VERSION: ${NC_VERSION:-stable-fpm-alpine}
+      NC_VERSION: ${NC_VERSION:-32-fpm-alpine}
+      SMBCLIENT_VERSION: ${SMBCLIENT_VERSION:-1.1.2}
+      SMBCLIENT_SHA256: ${SMBCLIENT_SHA256:-042465bdde187eb32d4233402f88368426d76c84ab1d076701b6592d6b5fa5d8}
   image: nrpx/nc-fpm:latest
   pull_policy: never
   command: "exit 0"
