@@ -74,8 +74,11 @@ not bound time waiting for I/O. The timeout also bounds legitimate single HTTP
 transfers or operations; use Nextcloud's chunked uploads for large files and
 review the limit if a valid operation requires more than five minutes.
 
-Requests exceeding 60 seconds trigger an FPM slow trace to the existing
-size-limited container log. Access entries include duration and peak PHP memory.
+Access entries include the routed request path (without query parameters),
+duration and peak PHP memory in the existing size-limited container log.
+FPM slow traces remain disabled: a runtime probe confirmed that the container's
+current capabilities prohibit ptrace. No additional tracing capability is needed
+for the access log and independent status listener.
 FPM status uses an independent listener at `127.0.0.1:9001` inside the application
 container, with path `/fpm-status`; inspect it through Docker exec/FastCGI.
 Do not publish the listener or add a public Nginx route for it.
