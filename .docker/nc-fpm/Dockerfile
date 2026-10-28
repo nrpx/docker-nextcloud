@@ -53,3 +53,5 @@ RUN set -ex; \
     php --ri smbclient; \
     php -r 'exit(extension_loaded("smbclient") && extension_loaded("bz2") && function_exists("smbclient_state_new") ? 0 : 1);'; \
     smbclient --version
+
+COPY zz-nextcloud-pool.conf /usr/local/etc/php-fpm.d/zz-nextcloud-pool.conf

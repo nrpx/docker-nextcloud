@@ -59,3 +59,30 @@ With a huge inherited host limit, Erlang can preallocate gigabytes for its port
 table even without TURN sessions; see [eturnal issue 97](https://github.com/processone/eturnal/issues/97).
 Recreate the service after changing the limits, then check `eturnalctl info`
 and the container's memory usage.
+
+## PHP-FPM pool and stalled requests
+
+The image bakes in `zz-nextcloud-pool.conf`; no init containers or host-side
+configuration preparation are needed. Its dynamic pool allows up to 8 workers,
+starts 3, keeps 2–4 idle, and recycles each worker after 500 requests. These are
+conservative initial values for the current 2 GiB host shared with other services;
+measure worker RSS and available host RAM before raising them.
+
+A 300-second FPM wall-clock timeout reclaims stalled requests, including work
+after `fastcgi_finish_request()`. On Linux PHP's `max_execution_time` alone does
+not bound time waiting for I/O. The timeout also bounds legitimate single HTTP
+transfers or operations; use Nextcloud's chunked uploads for large files and
+review the limit if a valid operation requires more than five minutes.
+
+Requests exceeding 60 seconds trigger an FPM slow trace to the existing
+size-limited container log. Access entries include duration and peak PHP memory.
+FPM status uses an independent listener at `127.0.0.1:9001` inside the application
+container, with path `/fpm-status`; inspect it through Docker exec/FastCGI.
+Do not publish the listener or add a public Nginx route for it.
+
+The October 28 incident exhausted the default five-worker pool and left Nginx
+returning upstream timeouts until the application container was restarted.
+Nextcloud 35.0.2 reports no pending database upgrade and passes core integrity.
+The retained application log also contains remote WebDAV failures from
+`files_lock`; historical logs do not identify the precise blocked call because
+the prior pool had neither a slow log nor an independent status listener.
